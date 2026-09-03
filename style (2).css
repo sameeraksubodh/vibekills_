@@ -1,0 +1,501 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-dark: #1e1e1e;
+  --bg-sidebar: #252526;
+  --bg-header: #323233;
+  --bg-activity: #333333;
+  --bg-tab: #2d2d2d;
+  --bg-tab-active: #1e1e1e;
+  --bg-statusbar: #007acc;
+  --border-color: #3c3c3c;
+  --text-main: #d4d4d4;
+  --text-muted: #858585;
+  --accent-blue: #007acc;
+  --accent-red: #ff4444;
+  --accent-green: #00C851;
+  --accent-yellow: #ffbb33;
+  --accent-orange: #ff7733;
+  --font-code: 'Fira Code', Consolas, 'Courier New', monospace;
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-ui);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  user-select: none;
+}
+
+.ide-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.ide-header {
+  height: 38px;
+  background-color: var(--bg-header);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 12px;
+}
+
+.header-left, .header-center, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-icon { font-size: 16px; }
+.app-title { font-weight: 700; color: #ffffff; }
+
+.menu-bar span {
+  padding: 4px 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.menu-bar span:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.btn-mic-enable {
+  background: #007acc;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-mic-enable.active { background: #28a745; }
+.btn-test-alarm { background: #d9534f; }
+.btn-test-alarm:hover { background: #c9302c; }
+
+/* Warning Alarm Banner */
+.warning-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: linear-gradient(90deg, rgba(255, 68, 68, 0.4), rgba(255, 187, 51, 0.4));
+  border-bottom: 2px solid #ff4444;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  animation: warning-banner-flash 0.4s infinite alternate;
+}
+
+@keyframes warning-banner-flash {
+  from { background-color: rgba(255, 68, 68, 0.2); }
+  to   { background-color: rgba(255, 68, 68, 0.6); }
+}
+
+.ide-workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.activity-bar {
+  width: 48px;
+  background-color: var(--bg-activity);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+  gap: 16px;
+  border-right: 1px solid var(--border-color);
+}
+
+.icon-item {
+  font-size: 18px;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.icon-item.active { opacity: 1; }
+
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: var(--bg-dark);
+  overflow: hidden;
+  position: relative;
+}
+
+.editor-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 0 rgba(255, 68, 68, 0);
+  transition: box-shadow 0.1s ease-out;
+  z-index: 5;
+}
+
+.editor-container.warning-vignette::after {
+  box-shadow: inset 0 0 100px 10px rgba(255, 68, 68, var(--warning-intensity, 0.4));
+}
+
+.editor-tabs {
+  height: 35px;
+  background-color: var(--bg-tab);
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tab {
+  background-color: var(--bg-tab-active);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  font-size: 13px;
+  border-top: 2px solid var(--accent-blue);
+  color: #ffffff;
+}
+
+.editor-body {
+  display: flex;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.line-numbers {
+  width: 50px;
+  background-color: var(--bg-sidebar);
+  color: var(--text-muted);
+  font-family: var(--font-code);
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 12px 8px 12px 0;
+  text-align: right;
+  border-right: 1px solid var(--border-color);
+}
+
+.code-textarea {
+  flex: 1;
+  height: 100%;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-code);
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 12px;
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+.code-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #161616;
+}
+
+.ide-statusbar {
+  height: 28px;
+  background-color: var(--bg-statusbar);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-size: 12px;
+  color: #ffffff;
+}
+
+.status-left, .status-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+#warningIndicator {
+  background: #ff4444;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  animation: alarm-pill-blink 0.3s infinite alternate;
+}
+
+@keyframes alarm-pill-blink {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+.volume-bar-bg {
+  position: relative;
+  width: 90px;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.volume-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent-green);
+}
+
+.volume-bar-fill.warning-pulse {
+  animation: warning-flash 0.3s infinite alternate;
+}
+
+@keyframes warning-flash {
+  from { background-color: #ffbb33; }
+  to   { background-color: #ff4444; }
+}
+
+.warning-threshold-marker {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: #ffffff;
+  z-index: 2;
+}
+
+.blackout-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000000;
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+}
+
+.blackout-overlay.active { display: flex !important; }
+
+.alert-box {
+  background: #111115;
+  border: 2px solid #ff3333;
+  border-radius: 16px;
+  padding: 36px;
+  max-width: 560px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.alert-box.shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-3px, 0, 0); }
+  20%, 80% { transform: translate3d(5px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-10px, 0, 0); }
+  40%, 60% { transform: translate3d(10px, 0, 0); }
+}
+
+/* Popping fist emoji shown when a blackout is enforced */
+.punching-emoji {
+  font-size: 40px;
+  margin-bottom: 4px;
+  transform: scale(0.6);
+  opacity: 0;
+}
+
+.punching-emoji.pop {
+  animation: punch-pop 0.5s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+@keyframes punch-pop {
+  0%   { transform: scale(0.4) rotate(-15deg); opacity: 0; }
+  60%  { transform: scale(1.25) rotate(8deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  background: #ff3333;
+  color: #ffffff;
+}
+
+.status-badge.accepted { background: #00C851; }
+.status-badge.rejected { background: #ffbb33; color: #000; }
+
+.alert-title { color: #ffffff; font-size: 26px; margin: 16px 0; }
+.alert-body { color: #cccccc; font-size: 15px; margin-bottom: 16px; }
+
+.whisper-meter-container {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.whisper-bar-bg {
+  position: relative;
+  height: 14px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.whisper-bar-fill { height: 100%; width: 0%; background: #00C851; }
+
+.whisper-threshold-line {
+  position: absolute;
+  top: 0;
+  left: 35%;
+  width: 2px;
+  height: 100%;
+  background: #ffaa00;
+}
+
+.instruction-box {
+  background: rgba(0, 122, 204, 0.15);
+  border: 1px solid rgba(0, 122, 204, 0.4);
+  border-radius: 8px;
+  padding: 14px;
+  text-align: left;
+}
+
+/* ---- Puzzle Modal: Code Ransom Matrix game ---- */
+.puzzle-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 100000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.matrix-card-panel {
+  background: #111115;
+  border: 2px solid #007acc;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 0 50px rgba(0, 122, 204, 0.5);
+}
+
+.matrix-title {
+  color: #ffffff;
+  font-size: 20px;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.matrix-sub {
+  color: #aaaaaa;
+  font-size: 13px;
+}
+
+.puzzle-status {
+  min-height: 16px;
+  color: #ff8866;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.matrix-shuffle-msg {
+  grid-column: 1 / -1;
+  color: #ffbb33;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 30px 0;
+}
+
+.matrix-card {
+  aspect-ratio: 1 / 1;
+  perspective: 600px;
+  cursor: pointer;
+}
+
+.matrix-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s;
+  transform-style: preserve-3d;
+}
+
+.matrix-card.flipped .matrix-card-inner {
+  transform: rotateY(180deg);
+}
+
+.matrix-card-front,
+.matrix-card-back {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  backface-visibility: hidden;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.matrix-card-front {
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+
+.matrix-card-back {
+  background: #0d2b3d;
+  border: 1px solid var(--accent-blue);
+  color: #ffffff;
+  transform: rotateY(180deg);
+}
+
+.matrix-card.matched .matrix-card-back {
+  background: #0a3d1f;
+  border-color: var(--accent-green);
+}
+
+.matrix-card.shake .matrix-card-inner {
+  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}

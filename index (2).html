@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rage IDE - Frustration-Proof Code Editor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ide-container">
+    <header class="ide-header">
+      <div class="header-left">
+        <span class="app-icon">⚡</span>
+        <span class="app-title">Rage IDE</span>
+        <nav class="menu-bar">
+          <span>File</span>
+          <span>Edit</span>
+          <span>View</span>
+          <span>Run</span>
+          <span>Help</span>
+        </nav>
+      </div>
+      <div class="header-center">
+        <span class="active-file">app.js — Rage IDE</span>
+      </div>
+      <div class="header-right">
+        <button id="testBeepBtn" class="btn-mic-enable btn-test-alarm" type="button">
+          <span class="mic-icon">🚨</span> Test Warning Alarm
+        </button>
+        <button id="startAudioBtn" class="btn-mic-enable">
+          <span class="mic-icon">🎤</span> Start Mic Monitor
+        </button>
+      </div>
+    </header>
+
+    <!-- Warning Alarm Banner -->
+    <div id="warningBanner" class="warning-banner" style="display:none;">
+      <span class="warning-banner-icon">🚨</span>
+      <span id="warningBannerText" class="warning-banner-text">CALM DOWN: You are approaching the rage threshold!</span>
+    </div>
+
+    <div class="ide-workspace">
+      <aside class="activity-bar">
+        <div class="icon-item active" title="Explorer">📁</div>
+        <div class="icon-item" title="Search">🔍</div>
+        <div class="icon-item" title="Source Control">🌿</div>
+        <div class="icon-item" title="Rage Monitor">🔥</div>
+      </aside>
+
+      <main class="editor-container">
+        <div class="editor-tabs">
+          <div class="tab active">
+            <span class="file-icon">📜</span>
+            <span class="tab-name">hackathon_buggy_code.js</span>
+            <span class="close-tab">×</span>
+          </div>
+        </div>
+
+        <div class="editor-body">
+          <div id="lineNumbers" class="line-numbers">1</div>
+          <textarea id="editor" class="code-textarea" spellcheck="false"></textarea>
+        </div>
+      </main>
+    </div>
+
+    <footer class="ide-statusbar">
+      <div class="status-left">
+        <span class="status-item highlight">
+          <span class="status-icon">⚠️</span>
+          <span>Rage Blackouts Count: <strong id="blackoutCount">0</strong></span>
+        </span>
+        <span class="status-item">
+          <span>Mic Status: <strong id="micStatusText">Inactive</strong></span>
+        </span>
+        <span class="status-item" id="warningIndicator" style="display:none;">
+          <span class="status-icon">🔊</span>
+          <span>CALM DOWN ALARM ACTIVE</span>
+        </span>
+      </div>
+
+      <div class="status-right">
+        <div class="status-item volume-meter-box">
+          <span class="meter-label">Live Mic Volume:</span>
+          <div class="volume-bar-bg">
+            <div id="warningThresholdMarker" class="warning-threshold-marker"></div>
+            <div id="volumeMeterFill" class="volume-bar-fill"></div>
+          </div>
+          <span id="volumeValue" class="meter-val">0</span>
+        </div>
+
+        <div class="status-item sensitivity-box">
+          <label for="sensitivitySlider" class="slider-label">Mic Sensitivity:</label>
+          <input type="range" id="sensitivitySlider" min="10" max="100" value="45">
+          <span id="sensitivityValue" class="slider-val">45</span>
+        </div>
+
+        <span class="status-item">UTF-8</span>
+        <span class="status-item">JavaScript</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Fullscreen Blackout Overlay: hostage encryption + whisper apology -->
+  <div id="blackout" class="blackout-overlay" style="display: none;">
+    <div id="alertCard" class="alert-box">
+      <div id="punchingEmoji" class="punching-emoji">👊</div>
+
+      <div class="alert-header">
+        <span id="statusBadge" class="status-badge">RAGE DETECTED</span>
+        <h1 id="alertTitle" class="alert-title">BLACKOUT ENFORCED</h1>
+      </div>
+
+      <div class="alert-content">
+        <p id="alertBody" class="alert-body">
+          Your decibel level exceeded the maximum allowed frustration threshold.
+        </p>
+
+        <div class="whisper-meter-container">
+          <div class="whisper-label">Whisper Volume Check (Target ≤ 35):</div>
+          <div class="whisper-bar-bg">
+            <div id="blackoutVolumeFill" class="whisper-bar-fill"></div>
+            <div class="whisper-threshold-line"></div>
+          </div>
+          <div class="whisper-volume-text">Current Live Volume: <span id="blackoutVolumeValue">0</span></div>
+        </div>
+
+        <div class="instruction-box">
+          <p class="instruction-title">🗣️ HOW TO RECOVER ACCESS:</p>
+          <p class="instruction-text">
+            Say <strong>"sorry"</strong> into your microphone gently.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Puzzle Modal: single-board, 4-attempt memory match to decrypt hostage lines -->
+  <div id="puzzleModal" class="puzzle-modal" style="display: none;">
+    <div class="matrix-card-panel">
+      <h2 class="matrix-title">🔐 CODE RANSOM MATRIX</h2>
+      <p class="matrix-sub" style="margin-bottom: 10px;">You have exactly <span id="currentAttemptText">4</span> guess attempts remaining on this matrix board!</p>
+      <div id="hostageLinesLog" style="color: #ffaa00; font-family: monospace; font-size: 11px; margin-bottom: 15px; font-weight: bold; background: rgba(255,170,0,0.05); padding: 8px; border-radius: 6px; border: 1px dashed rgba(255,170,0,0.2); display: inline-block;">Lines Under Threat: None</div>
+
+      <div id="puzzleStatus" class="puzzle-status"></div>
+
+      <div id="cardGrid" class="matrix-grid"></div>
+
+      <!-- NEW: Final Summary Restoration Note Card Placement -->
+      <div id="finalRestorationNote" style="display: none; color: #00ffcc; font-family: monospace; font-size: 12px; margin-top: 15px; font-weight: bold; background: rgba(0,255,204,0.08); padding: 10px; border-radius: 8px; border: 1px solid #00ffcc;"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
